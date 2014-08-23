@@ -41,6 +41,28 @@ function say(string){
 	console.log(string);
 }
 
+function moveUpdate(object){
+	say(object);
+	object.moveCount -= 1;
+	object.moveLabel.text = 'moves: ' + object.moveCount;
+}
+
+function moveCheck(object){
+	if (object.moveCount <=0){
+			object.switchTo();
+	}
+
+}
+
+function createSpecial(object){
+	object.special = game.add.sprite(game.world.width-game.world.width/4,game.world.height-game.world.height/4, 'proto');
+		object.special.frame = 5;
+
+		game.physics.arcade.enable(object.special);
+		object.special.anchor.setTo(0.5,0.5);	
+}
+
+
 // function bigAdd(list, type){
 // 	if (type == 'audio'){
 

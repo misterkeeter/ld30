@@ -1,5 +1,5 @@
 // play.js
-var playState = {
+var catState = {
 
 	create: function(){
 		this.cursor = game.input.keyboard.createCursorKeys();
@@ -20,32 +20,26 @@ var playState = {
 		this.cat.outOfBoundsKill = true;
 		game.physics.arcade.enable(this.cat);
 
-		this.owner = game.add.sprite(game.world.width - (game.world.width/4), game.world.centerY,'proto');
-		this.owner.anchor.setTo(0.5,0.5);
-		this.owner.frame =1;
-		this.owner.scale.setTo(2,2);
 
-		this.owner.checkWorldBounds = true;
-		this.owner.outOfBoundsKill = true;
-		game.physics.arcade.enable(this.owner);
 
 		this.createWorld();
+
+		createSpecial(this);
 
 		this.moveSpeed = 75;
 		this.restSpeed = 0;
 		this.moveAmount = this.moveSpeed;
-
 		this.moveCount = 10;
 
 		this.moveLabel = game.add.text(30,30,'moves: ' + this.moveCount,
 			{font: '18px Arial', fill: '#ffffff'});
 
+
 	},
 
 	update: function(){
 		game.physics.arcade.collide(this.cat, this.layer);
-		game.physics.arcade.collide(this.owner, this.layer);
-		game.physics.arcade.overlap(this.owner,this.cat, this.win, null, this);
+		game.physics.arcade.overlap(this.cat,this.special, this.win, null, this);
 
 		this.move();
 		// this.map.tilePosition.x = -game.camera.x;
@@ -77,74 +71,74 @@ var playState = {
 		// 	this.cat.body.velocity = 0
 		// 	this.owner.body.velocity = 0
 		// }
- 
+
 
 		if(this.cursor.left.justPressed(10)){
 			say('left');
 			moveUpdate(this);
-			// this.cat.x -= moveAmount;
-			// this.owner.x -= moveAmount*2;
+
 			this.cat.body.velocity.x = -this.moveAmount*2;
-			this.owner.body.velocity.x = -this.moveAmount;
+
 			this.cat.body.velocity.y = 0;
-			this.owner.body.velocity.y = 0;
+
 		}
 		if(this.cursor.right.justPressed(10)){
 			say('right');
 			moveUpdate(this);
-			// this.cat.x += moveAmount;
-			// this.owner.x += moveAmount*2;
+
 			this.cat.body.velocity.x = this.moveAmount*2;
-			this.owner.body.velocity.x = this.moveAmount;
+
 			this.cat.body.velocity.y = 0;
-			this.owner.body.velocity.y = 0;
+
 		}
 		if(this.cursor.up.justPressed(10)){
 			say('up');
+			moveUpdate(this);
 
-			// this.cat.y -= moveAmount;
-			// this.owner.y -= moveAmount*2;
 			this.cat.body.velocity.y = -this.moveAmount*2;
-			this.owner.body.velocity.y = -this.moveAmount;
+
 			this.cat.body.velocity.x = 0;
-			this.owner.body.velocity.x = 0;
+
 		}
 		if(this.cursor.down.justPressed(10)){
 			say('down');
 			moveUpdate(this);
-			// this.cat.y += moveAmount;
-			// this.owner.y += moveAmount*2;
+
 			this.cat.body.velocity.y = this.moveAmount*2;
-			this.owner.body.velocity.y = this.moveAmount;
+
 			this.cat.body.velocity.x = 0;
-			this.owner.body.velocity.x = 0;
+
 		}
 	},
 
 	killCheck: function(){
 		if (!this.cat.alive){
 			// game.time.events.add(1000, this.lose, this);
-			this.toOwner();
+			this.switchTo();
 		}
-		if (!this.owner.alive){
-			// game.time.events.add(1000, this.win, this);
-			this.toCat();
-		}
+
 	},
 
-	toCat:function(){
-		say("you are cat");
-		game.state.start('cat');
-	},
+	// moveCheck: function(){
+	// 	if (this.moveCount <=0){
+	// 		this.toOwner();
+	// 	}
+	// },
 
-	toOwner:function(){
-		say("you are owner");
+	// moveUpdate: function(){
+	// 	this.moveCount -= 1;
+	// 	this.moveLabel.text = 'moves: ' + this.moveCount;
+	// },
+
+
+	switchTo:function(){
+		say("you owner");
 		game.state.start('owner');
 	},
 
 	win: function(){
 		say("you win");
-		game.state.start('win');	
+		game.state.start('play');	
 	},
 
 	end:function(){

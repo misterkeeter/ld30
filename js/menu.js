@@ -4,7 +4,7 @@ var menuState = {
 	
 	create: function  () {
 
-		var nameLabel = game.add.text(game.world.centerX, game.world.centerY, 'Connected Worlds',
+		var nameLabel = game.add.text(game.world.centerX, game.world.centerY, 'Kit Tik Kat Tak',
 			{ font: '50px Arial', fill: '#ffffff' });
 		nameLabel.anchor.setTo(0.5,0.5);
 
@@ -19,12 +19,13 @@ var menuState = {
 	},
 
 	start: function(){
-		game.state.start('play');
+		game.state.start('cat');
 	}
 };
 
 var winState = {
 	create: function(){
+		// this.game.resizeWorld();
 		var nameLabel = game.add.text(game.world.centerX, game.world.centerY, 'You Won',
 			{ font: '50px Arial', fill: '#ffffff' });
 		nameLabel.anchor.setTo(0.5,0.5);
@@ -45,6 +46,8 @@ var winState = {
 
 var loseState = {
 	create: function(){
+		// game.world.width = game.screen.width;
+		// game.world.height = game.screen.height;
 		var nameLabel = game.add.text(game.world.centerX, game.world.centerY, 'You Lose',
 			{ font: '50px Arial', fill: '#ffffff' });
 		nameLabel.anchor.setTo(0.5,0.5);
