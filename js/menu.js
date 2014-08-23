@@ -19,7 +19,7 @@ var menuState = {
 	},
 
 	start: function(){
-		game.state.start('cat');
+		game.state.start('play');
 	}
 };
 

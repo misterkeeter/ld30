@@ -35,10 +35,19 @@ var playState = {
 		this.restSpeed = 0;
 		this.moveAmount = this.moveSpeed;
 
-		this.moveCount = 10;
+		this.cat.moveCount = 5;
+		this.owner.moveCount = 10;
 
-		this.moveLabel = game.add.text(30,30,'moves: ' + this.moveCount,
+		this.cat.moveLabel = game.add.text(30,30,'moves: ' + this.cat.moveCount,
 			{font: '18px Arial', fill: '#ffffff'});
+
+		this.owner.moveLabel = game.add.text(game.world.width-100,30,'moves: ' + this.owner.moveCount,
+			{font: '18px Arial', fill: '#ffffff'});
+
+		this.isDown = false;
+		this.isRight = false;
+		this.isUp = false;
+		this.isLeft = false;
 
 	},
 
@@ -51,7 +60,9 @@ var playState = {
 		// this.map.tilePosition.x = -game.camera.x;
   //   	this.map.tilePosition.y = -game.camera.y;
 		this.killCheck();
-		moveCheck(this);
+		// moveCheck(this, this.cat);
+		// moveCheck(this, this.owner);
+		moveCheckTwo(this, this.cat, this.owner);
 	},
 
 	createWorld: function(){
@@ -66,58 +77,74 @@ var playState = {
 	move: function(){
 		
 
-		// this.cat.body.velocity.x = 0;
-		// this.cat.body.velocity.y = 0;
-		// this.owner.body.velocity.x = 0;
-		// this.owner.body.velocity.y = 0;
-		// this.cat.body.velocity -= this.cat.body.velocity/10;
-		// this.owner.body.velocity -= this.owner.body.velocity/10;
-
-		// if (this.moveAmount <= 10){
-		// 	this.cat.body.velocity = 0
-		// 	this.owner.body.velocity = 0
-		// }
- 
-
 		if(this.cursor.left.justPressed(10)){
-			say('left');
-			moveUpdate(this);
-			// this.cat.x -= moveAmount;
-			// this.owner.x -= moveAmount*2;
-			this.cat.body.velocity.x = -this.moveAmount*2;
-			this.owner.body.velocity.x = -this.moveAmount;
-			this.cat.body.velocity.y = 0;
-			this.owner.body.velocity.y = 0;
+			if (!this.isLeft) { 
+				this.isLeft = true;
+				say('left');
+				if (this.owner.moveCount > 0 ){
+					this.owner.body.velocity.x = -this.moveAmount;
+					this.owner.body.velocity.y = 0;
+				}
+				if (this.cat.moveCount > 0 ){
+					this.cat.body.velocity.x = -this.moveAmount*2;
+					this.cat.body.velocity.y = 0;
+				}
+				setMove(this, 'isLeft');
+				moveUpdate(this.owner);
+				moveUpdate(this.cat);
+			}
 		}
 		if(this.cursor.right.justPressed(10)){
-			say('right');
-			moveUpdate(this);
-			// this.cat.x += moveAmount;
-			// this.owner.x += moveAmount*2;
-			this.cat.body.velocity.x = this.moveAmount*2;
-			this.owner.body.velocity.x = this.moveAmount;
-			this.cat.body.velocity.y = 0;
-			this.owner.body.velocity.y = 0;
+			if (!this.isRight){
+				this.isRight = true;
+				say('right');
+				if (this.owner.moveCount > 0 ){
+					this.owner.body.velocity.x = this.moveAmount;
+					this.owner.body.velocity.y = 0;
+				}
+				if (this.cat.moveCount > 0 ){
+					this.cat.body.velocity.x = this.moveAmount*2;
+					this.cat.body.velocity.y = 0;
+				}
+				setMove(this, 'isRight');
+				moveUpdate(this.owner);
+				moveUpdate(this.cat);
+			}
 		}
 		if(this.cursor.up.justPressed(10)){
-			say('up');
-
-			// this.cat.y -= moveAmount;
-			// this.owner.y -= moveAmount*2;
-			this.cat.body.velocity.y = -this.moveAmount*2;
-			this.owner.body.velocity.y = -this.moveAmount;
-			this.cat.body.velocity.x = 0;
-			this.owner.body.velocity.x = 0;
+			if (!this.isUp){
+				this.isUp = true;
+				say('up');
+				
+				if (this.owner.moveCount > 0 ){
+					this.owner.body.velocity.y = -this.moveAmount;
+					this.owner.body.velocity.x = 0;
+				}
+				if (this.cat.moveCount > 0 ){
+					this.cat.body.velocity.y = -this.moveAmount*2;
+					this.cat.body.velocity.x = 0;
+				}
+				setMove(this, 'isUp');
+				moveUpdate(this.owner);
+				moveUpdate(this.cat);
+			}
 		}
 		if(this.cursor.down.justPressed(10)){
-			say('down');
-			moveUpdate(this);
-			// this.cat.y += moveAmount;
-			// this.owner.y += moveAmount*2;
-			this.cat.body.velocity.y = this.moveAmount*2;
-			this.owner.body.velocity.y = this.moveAmount;
-			this.cat.body.velocity.x = 0;
-			this.owner.body.velocity.x = 0;
+			if (!this.isDown){
+				this.isDown = true;
+				say('down');
+				if (this.owner.moveCount > 0 ){
+					this.owner.body.velocity.y = this.moveAmount;
+					this.owner.body.velocity.x = 0;
+				}
+				if (this.cat.moveCount > 0 ){
+					this.cat.body.velocity.y = this.moveAmount*2;
+					this.cat.body.velocity.x = 0;
+				}
+				setMove(this, 'isDown');
+				moveUpdate(this.owner);
+				moveUpdate(this.cat);
+			}
 		}
 	},
 
@@ -145,6 +172,11 @@ var playState = {
 	win: function(){
 		say("you win");
 		game.state.start('win');	
+	},
+
+	lose: function(){
+		say("you lose");
+		game.state.start('lose');
 	},
 
 	end:function(){

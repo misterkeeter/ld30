@@ -34,6 +34,11 @@ var catState = {
 		this.moveLabel = game.add.text(30,30,'moves: ' + this.moveCount,
 			{font: '18px Arial', fill: '#ffffff'});
 
+		this.isDown = false;
+		this.isRight = false;
+		this.isUp = false;
+		this.isLeft = false;
+
 
 	},
 
@@ -45,7 +50,7 @@ var catState = {
 		// this.map.tilePosition.x = -game.camera.x;
   //   	this.map.tilePosition.y = -game.camera.y;
 		this.killCheck();
-		moveCheck(this);
+		moveCheck(this, this.cat);
 	},
 
 	createWorld: function(){
@@ -74,40 +79,44 @@ var catState = {
 
 
 		if(this.cursor.left.justPressed(10)){
-			say('left');
-			moveUpdate(this);
-
-			this.cat.body.velocity.x = -this.moveAmount*2;
-
-			this.cat.body.velocity.y = 0;
-
+			if (!this.isLeft) { 
+				this.isLeft = true;
+				say('left');
+				moveUpdate(this);
+				this.cat.body.velocity.x = -this.moveAmount*2;
+				this.cat.body.velocity.y = 0;
+				setMove(this,'isLeft');
+			}
 		}
 		if(this.cursor.right.justPressed(10)){
-			say('right');
-			moveUpdate(this);
-
-			this.cat.body.velocity.x = this.moveAmount*2;
-
-			this.cat.body.velocity.y = 0;
-
+			if (!this.isRight){
+				this.isRight = true;
+				say('right');
+				moveUpdate(this);
+				this.cat.body.velocity.x = this.moveAmount*2;
+				this.cat.body.velocity.y = 0;
+				setMove(this,'isRight');
+			}
 		}
 		if(this.cursor.up.justPressed(10)){
-			say('up');
-			moveUpdate(this);
-
-			this.cat.body.velocity.y = -this.moveAmount*2;
-
-			this.cat.body.velocity.x = 0;
-
+			if (!this.isUp){
+				this.isUp = true;
+				say('up');
+				moveUpdate(this);
+				this.cat.body.velocity.y = -this.moveAmount*2;
+				this.cat.body.velocity.x = 0;
+				setMove(this,'isUp');
+			}
 		}
 		if(this.cursor.down.justPressed(10)){
-			say('down');
-			moveUpdate(this);
-
-			this.cat.body.velocity.y = this.moveAmount*2;
-
-			this.cat.body.velocity.x = 0;
-
+			if (!this.isDown){
+				this.isDown = true;
+				say('down');
+				moveUpdate(this);
+				this.cat.body.velocity.y = this.moveAmount*2;
+				this.cat.body.velocity.x = 0;
+				setMove(this,'isDown');
+			}
 		}
 	},
 
@@ -134,6 +143,11 @@ var catState = {
 	switchTo:function(){
 		say("you owner");
 		game.state.start('owner');
+	},
+
+	lose: function(){
+		say("you loser");
+		game.state.start('lose');
 	},
 
 	win: function(){

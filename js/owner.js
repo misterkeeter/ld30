@@ -37,6 +37,11 @@ var ownerState = {
 		this.moveLabel = game.add.text(30,30,'moves: ' + this.moveCount,
 			{font: '18px Arial', fill: '#ffffff'});
 
+		this.isDown = false;
+		this.isRight = false;
+		this.isUp = false;
+		this.isLeft = false;
+
 	},
 
 	update: function(){
@@ -47,7 +52,7 @@ var ownerState = {
 		// this.map.tilePosition.x = -game.camera.x;
   //   	this.map.tilePosition.y = -game.camera.y;
 		this.killCheck();
-		moveCheck(this);
+		moveCheck(this, this.owner);
 	},
 
 	createWorld: function(){
@@ -62,62 +67,45 @@ var ownerState = {
 	move: function(){
 		
 
-		// this.cat.body.velocity.x = 0;
-		// this.cat.body.velocity.y = 0;
-		// this.owner.body.velocity.x = 0;
-		// this.owner.body.velocity.y = 0;
-		// this.cat.body.velocity -= this.cat.body.velocity/10;
-		// this.owner.body.velocity -= this.owner.body.velocity/10;
-
-		// if (this.moveAmount <= 10){
-		// 	this.cat.body.velocity = 0
-		// 	this.owner.body.velocity = 0
-		// }
-
-
 		if(this.cursor.left.justPressed(10)){
-			say('left');
-			moveUpdate(this);
-			this.moveAmount = this.moveSpeed;
-			// this.cat.x -= moveAmount;
-			// this.owner.x -= moveAmount*2;
-
-			this.owner.body.velocity.x = -this.moveAmount;
-
-			this.owner.body.velocity.y = 0;
+			if (!this.isLeft) { 
+				this.isLeft = true;
+				say('left');
+				moveUpdate(this);
+				this.owner.body.velocity.x = -this.moveAmount;
+				this.owner.body.velocity.y = 0;
+				setMove(this, 'isLeft');
+			}
 		}
 		if(this.cursor.right.justPressed(10)){
-			say('right');
-			moveUpdate(this);
-			this.moveAmount = this.moveSpeed;
-			// this.cat.x += moveAmount;
-			// this.owner.x += moveAmount*2;
-
-			this.owner.body.velocity.x += this.moveAmount;
-
-			this.owner.body.velocity.y = 0;
+			if (!this.isRight){
+				this.isRight = true;
+				say('right');
+				moveUpdate(this);
+				this.owner.body.velocity.x = this.moveAmount;
+				this.owner.body.velocity.y = 0;
+				setMove(this, 'isRight');
+			}
 		}
 		if(this.cursor.up.justPressed(10)){
-			say('up');
-			moveUpdate(this);
-			this.moveAmount = this.moveSpeed;
-			// this.cat.y -= moveAmount;
-			// this.owner.y -= moveAmount*2;
-
-			this.owner.body.velocity.y = -this.moveAmount;
-
-			this.owner.body.velocity.x = 0;
+			if (!this.isUp){
+				this.isUp = true;
+				say('up');
+				moveUpdate(this);
+				this.owner.body.velocity.y = -this.moveAmount;
+				this.owner.body.velocity.x = 0;
+				setMove(this, 'isUp');
+			}
 		}
 		if(this.cursor.down.justPressed(10)){
-			say('down');
-			moveUpdate(this);
-			this.moveAmount = this.moveSpeed;
-			// this.cat.y += moveAmount;
-			// this.owner.y += moveAmount*2;
-
-			this.owner.body.velocity.y += this.moveAmount;
-
-			this.owner.body.velocity.x = 0;
+			if (!this.isDown){
+				this.isDown = true;
+				say('down');
+				moveUpdate(this);
+				this.owner.body.velocity.y = this.moveAmount;
+				this.owner.body.velocity.x = 0;
+				setMove(this, 'isDown');
+			}
 		}
 	},
 
@@ -137,6 +125,11 @@ var ownerState = {
 	win: function(){
 		say("you win");
 		game.state.start('play');	
+	},
+
+	lose: function(){
+		say("you loser");
+		game.state.start('lose');
 	},
 
 	end:function(){
