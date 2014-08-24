@@ -8,7 +8,8 @@ game.global = {
 	lastAngle:0,
 	lastVelX:0,
 	lastVelY:0,
-	moveSpeed:300
+	moveSpeed:300,
+	font:'Graduate'
 };
 
 game.state.add('boot', bootState);

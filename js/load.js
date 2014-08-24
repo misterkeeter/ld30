@@ -3,7 +3,7 @@ var loadState = {
 
 	preload: function(){
 		var loadingLabel = game.add.text(game.world.centerX, 40, 'loading...',
-			{ font: '30px Arial', fill: '#ffffff'});
+			{ font: '30px ' + game.global.font, fill: '#ffffff'});
 		loadingLabel.anchor.setTo(0.5,0.5);
 
 		//Display the progress bar
@@ -14,6 +14,11 @@ var loadState = {
 		game.load.spritesheet('proto','assets/prototype.png',32,32);
 		game.load.image('tileset', 'assets/prototype.png');
 		game.load.tilemap('first', 'assets/firstmap.json', null, Phaser.Tilemap.TILED_JSON);
+
+		var loadAudio = [
+			'cat3', 'owner3', 'Death', 'intro', 'loop', 'lose', 'win'
+		];
+		bigLoad(loadAudio, 'audio');
 	},
 
 	create: function(){

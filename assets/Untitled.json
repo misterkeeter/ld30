@@ -22,7 +22,7 @@
         {
          "firstgid":1,
          "image":"prototype.png",
-         "imageheight":64,
+         "imageheight":32,
          "imagewidth":512,
          "margin":0,
          "name":"tileset",

@@ -42,38 +42,41 @@ function say(string){
 }
 
 function moveUpdate(object){
-	if (object.moveCount > 0){
+	// if (object.moveCount > 0){
 		object.moveCount -= 1;
-		object.moveLabel.text = 'moves: ' + object.moveCount;
-	} 
+		object.moveLabel.text = 'moves left: ' + object.moveCount;
+	// } 
 }
 
 function moveCheck(object, player){
-	if (object.moveCount == 0 && player.body.velocity.x ==0 && player.body.velocity.y == 0){
-			say(player + " " + player.body.velocity);
-			object.lose();
-	}
-	if (object.moveCount == 0 && player.body.velocity !== (0,0)){
-		object.cursor.up.enabled = false;
-		object.cursor.down.enabled = false;
-		object.cursor.left.enabled = false;
-		object.cursor.right.enabled = false;
+	// if (object.moveCount == 0 && player.body.velocity.x ==0 && player.body.velocity.y == 0){
+	// 		say(player + " " + player.body.velocity);
+	// 		object.lose();
+	// }
+	// if (object.moveCount == 0 && player.body.velocity !== (0,0)){
+	// 	object.cursor.up.enabled = false;
+	// 	object.cursor.down.enabled = false;
+	// 	object.cursor.left.enabled = false;
+	// 	object.cursor.right.enabled = false;
+	// }
+	if(player.moveCount == 0){
+		object.lose();
 	}
 
 
 }
 
 function moveCheckTwo(object, cat, owner){
-	zeroPoint = new Phaser.Point(0,0);
+	// zeroPoint = new Phaser.Point(0,0);
 	// console.log(cat.moveCount == 0);
 	// console.log(cat.body.velocity == zeroPoint);
 	// console.log(owner.moveCount == 0);
 	// console.log(owner.body.velocity == zeroPoint);
 
-	if ((cat.moveCount == 0) && (Phaser.Point.equals(cat.body.velocity,zeroPoint)) && (owner.moveCount == 0) && (Phaser.Point.equals(owner.body.velocity, zeroPoint)) ) {
-			say("loser");
-			object.lose();
-	}
+	// if ((cat.moveCount == 0) && (Phaser.Point.equals(cat.body.velocity,zeroPoint)) && (owner.moveCount == 0) && (Phaser.Point.equals(owner.body.velocity, zeroPoint)) ) {
+	// 		say("loser");
+	// 		object.lose();
+	// }
 	// if (object.moveCount == 0 && player.body.velocity !== (0,0)){
 	// 	object.cursor.up.enabled = false;
 	// 	object.cursor.down.enabled = false;
@@ -117,6 +120,12 @@ function createSpecial(object){
 		object.special.anchor.setTo(0.5,0.5);	
 }
 
+function teleport(player){
+	if (player.y > game.world.height + 5){ player.y = 0; }
+	else if (player.y < - 5){player.y = game.world.height;}
+	else if (player.x > game.world.width + 5){player.x = 0;}
+	else if (player.x < -5){player.x = game.world.width;}
+}
 
 
 

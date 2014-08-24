@@ -17,27 +17,27 @@ var catState = {
 		this.isRight = false;
 		this.isUp = false;
 		this.isLeft = false;
-		console.log(game.global.lastAngle);
-		if (Math.abs(game.global.lastAngle) == 90 && game.global.lastPosY > game.world.height){
-			console.log(game.global.lastAngle);
+
+		if (game.global.lastPosY > game.world.height){
+
 			this.cat = game.add.sprite(game.global.lastPosX, 0, 'proto');
 			this.cat.angle = game.global.lastAngle;
 			this.isDown = true;
 		}
-		if (game.global.lastAngle == -180 && game.global.lastPosX > game.world.width){
-			console.log(game.global.lastAngle);
+		else if (game.global.lastPosX > game.world.width){
+
 			this.cat = game.add.sprite(0, game.global.lastPosY, 'proto');
 			this.cat.angle = game.global.lastAngle;
 			this.isRight = true;
 		}
-		if (game.global.lastAngle == 0 && game.global.lastPosX < 0){
-			console.log(game.global.lastAngle);
+		else if (game.global.lastPosX < 0){
+
 			this.cat = game.add.sprite(game.world.width, game.global.lastPosY, 'proto');
 			this.cat.angle = game.global.lastAngle;
 			this.isLeft = true;
 		}
-		if (Math.abs(game.global.lastAngle) == 90 && game.global.lastPosY < 0){
-			console.log(game.global.lastAngle);
+		else if (game.global.lastPosY < 0){
+
 			this.cat = game.add.sprite(game.global.lastPosX, game.world.height, 'proto');
 			this.cat.angle = game.global.lastAngle;
 			this.isUp = true;
@@ -49,6 +49,7 @@ var catState = {
 		this.cat.animations.add('move', [0,1],8,true);
 		this.cat.animations.add('stop', [1],5,true);
 		this.cat.animations.play('move');
+		this.cat.scale.setTo(3,3);
 
 		game.physics.arcade.enable(this.cat);
 		this.cat.body.velocity.x = game.global.lastVelX;

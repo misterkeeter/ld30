@@ -17,6 +17,13 @@
 	<script type="text/javascript" src="js/game.js"></script>
 
 	<style type="text/css">
+
+		/*@import url(http://fonts.googleapis.com/css?family=Geo);*/
+		@import url(http://fonts.googleapis.com/css?family=Graduate);
+
+		.hiddenText { font-family: 'Graduate' ; visibility: hidden;}
+		
+
         html{
             text-align: center;
         }
@@ -24,12 +31,20 @@
             margin: 10px auto;
             display: inline-block;
         }
+        p{
+        }
+        div{
+        	text-align: center;        	margin: 0 auto;
+        }
     </style>
 
 </head>
 <body style="align:center;">
-	<p>Ludem Dare 30 - Connected Worlds</p>
-	<div class="gameDiv"></div>
+	<div><p>Ludem Dare 30 - Connected Worlds</p></div>
+	<div id="gameDiv"></div>
+	
+	<div><p>Use the Arrow keys to move</p></div>
+	<p class="hiddenText"> . </p
 	
 </body>
 </html>

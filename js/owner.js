@@ -18,27 +18,26 @@ var ownerState = {
 		this.isRight = false;
 		this.isUp = false;
 		this.isLeft = false;
-		console.log(game.global.lastAngle);
-		if (Math.abs(game.global.lastAngle) == 90 && game.global.lastPosY > game.world.height){
-			console.log(game.global.lastAngle);
+
+		if (game.global.lastPosY > game.world.height){
+
 			this.owner = game.add.sprite(game.global.lastPosX, 0, 'proto');
 			this.owner.angle = game.global.lastAngle;
 			this.isDown = true;
 		}
-		if (game.global.lastAngle == -180 && game.global.lastPosX > game.world.width){
-			console.log(game.global.lastAngle);
+		else if (game.global.lastPosX > game.world.width){
 			this.owner = game.add.sprite(0, game.global.lastPosY, 'proto');
 			this.owner.angle = game.global.lastAngle;
 			this.isRight = true;
 		}
-		if (game.global.lastAngle == 0 && game.global.lastPosX < 0){
-			console.log(game.global.lastAngle);
+		else if (game.global.lastPosX < 0){
+
 			this.owner = game.add.sprite(game.world.width, game.global.lastPosY, 'proto');
 			this.owner.angle = game.global.lastAngle;
 			this.isLeft = true;
 		}
-		if ( Math.abs(game.global.lastAngle) == 90 && game.global.lastPosY < 0){
-			console.log(game.global.lastAngle);
+		else if (game.global.lastPosY < 0){
+
 			this.owner = game.add.sprite(game.global.lastPosX, game.world.height, 'proto');
 			this.owner.angle = game.global.lastAngle;
 			this.isUp = true;
@@ -46,10 +45,10 @@ var ownerState = {
 
 
 		this.owner.anchor.setTo(0.5,0.5);
-		this.owner.animations.add('move', [0,1],8,true);
-		this.owner.animations.add('stop', [1],5,true);
+		this.owner.animations.add('move', [10,11,12,13],8,true);
+		this.owner.animations.add('stop', [13],1,true);
 		this.owner.animations.play('move');
-		this.owner.scale.setTo(2,2);
+		this.owner.scale.setTo(3,3);
 
 
 		game.physics.arcade.enable(this.owner);
