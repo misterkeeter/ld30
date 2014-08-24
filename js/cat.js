@@ -2,6 +2,7 @@
 var catState = {
 
 	create: function(){
+		game.stage.smoothed = false;
 		this.cursor = game.input.keyboard.createCursorKeys();
 
 		var spaceEnd = game.add.text(game.world.centerX, game.world.height-80,
@@ -12,13 +13,46 @@ var catState = {
 		var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		spaceKey.onDown.addOnce(this.end, this);
 
-		this.cat = game.add.sprite(game.world.width/4, game.world.centerY, 'proto');
-		this.cat.anchor.setTo(0.5,0.5);
-		this.cat.frame=0;
+		this.isDown = false;
+		this.isRight = false;
+		this.isUp = false;
+		this.isLeft = false;
+		console.log(game.global.lastAngle);
+		if (Math.abs(game.global.lastAngle) == 90 && game.global.lastPosY > game.world.height){
+			console.log(game.global.lastAngle);
+			this.cat = game.add.sprite(game.global.lastPosX, 0, 'proto');
+			this.cat.angle = game.global.lastAngle;
+			this.isDown = true;
+		}
+		if (game.global.lastAngle == -180 && game.global.lastPosX > game.world.width){
+			console.log(game.global.lastAngle);
+			this.cat = game.add.sprite(0, game.global.lastPosY, 'proto');
+			this.cat.angle = game.global.lastAngle;
+			this.isRight = true;
+		}
+		if (game.global.lastAngle == 0 && game.global.lastPosX < 0){
+			console.log(game.global.lastAngle);
+			this.cat = game.add.sprite(game.world.width, game.global.lastPosY, 'proto');
+			this.cat.angle = game.global.lastAngle;
+			this.isLeft = true;
+		}
+		if (Math.abs(game.global.lastAngle) == 90 && game.global.lastPosY < 0){
+			console.log(game.global.lastAngle);
+			this.cat = game.add.sprite(game.global.lastPosX, game.world.height, 'proto');
+			this.cat.angle = game.global.lastAngle;
+			this.isUp = true;
+		}
 
-		this.cat.checkWorldBounds = true;
-		this.cat.outOfBoundsKill = true;
+		
+		this.cat.anchor.setTo(0.5,0.5);
+		this.cat.frame=1;
+		this.cat.animations.add('move', [0,1],8,true);
+		this.cat.animations.add('stop', [1],5,true);
+		this.cat.animations.play('move');
+
 		game.physics.arcade.enable(this.cat);
+		this.cat.body.velocity.x = game.global.lastVelX;
+		this.cat.body.velocity.y = game.global.lastVelY;
 
 
 
@@ -26,18 +60,15 @@ var catState = {
 
 		createSpecial(this);
 
-		this.moveSpeed = 75;
-		this.restSpeed = 0;
-		this.moveAmount = this.moveSpeed;
+		this.moveAmount = game.global.moveSpeed;
 		this.moveCount = 10;
 
 		this.moveLabel = game.add.text(30,30,'moves: ' + this.moveCount,
 			{font: '18px Arial', fill: '#ffffff'});
 
-		this.isDown = false;
-		this.isRight = false;
-		this.isUp = false;
-		this.isLeft = false;
+		
+
+
 
 
 	},
@@ -65,17 +96,9 @@ var catState = {
 	move: function(){
 		
 
-		// this.cat.body.velocity.x = 0;
-		// this.cat.body.velocity.y = 0;
-		// this.owner.body.velocity.x = 0;
-		// this.owner.body.velocity.y = 0;
-		// this.cat.body.velocity -= this.cat.body.velocity/10;
-		// this.owner.body.velocity -= this.owner.body.velocity/10;
-
-		// if (this.moveAmount <= 10){
-		// 	this.cat.body.velocity = 0
-		// 	this.owner.body.velocity = 0
-		// }
+		if (this.cat.body.velocity.x ==0 && this.cat.body.velocity.y == 0){
+			this.cat.animations.play('stop');
+		}
 
 
 		if(this.cursor.left.justPressed(10)){
@@ -83,8 +106,10 @@ var catState = {
 				this.isLeft = true;
 				say('left');
 				moveUpdate(this);
-				this.cat.body.velocity.x = -this.moveAmount*2;
+				this.cat.body.velocity.x = -this.moveAmount;
 				this.cat.body.velocity.y = 0;
+				this.cat.animations.play('move');
+				this.cat.angle = 0;
 				setMove(this,'isLeft');
 			}
 		}
@@ -93,8 +118,10 @@ var catState = {
 				this.isRight = true;
 				say('right');
 				moveUpdate(this);
-				this.cat.body.velocity.x = this.moveAmount*2;
+				this.cat.body.velocity.x = this.moveAmount;
 				this.cat.body.velocity.y = 0;
+				this.cat.animations.play('move');
+				this.cat.angle = 180;
 				setMove(this,'isRight');
 			}
 		}
@@ -103,8 +130,10 @@ var catState = {
 				this.isUp = true;
 				say('up');
 				moveUpdate(this);
-				this.cat.body.velocity.y = -this.moveAmount*2;
+				this.cat.body.velocity.y = -this.moveAmount;
 				this.cat.body.velocity.x = 0;
+				this.cat.animations.play('move');
+				this.cat.angle = 90;
 				setMove(this,'isUp');
 			}
 		}
@@ -113,16 +142,24 @@ var catState = {
 				this.isDown = true;
 				say('down');
 				moveUpdate(this);
-				this.cat.body.velocity.y = this.moveAmount*2;
+				this.cat.body.velocity.y = this.moveAmount;
 				this.cat.body.velocity.x = 0;
+				this.cat.animations.play('move');
+				this.cat.angle = -90;
 				setMove(this,'isDown');
 			}
 		}
 	},
 
 	killCheck: function(){
-		if (!this.cat.alive){
+		if (this.cat.position.x > game.width + 16 || this.cat.position.x < -16 ||
+			this.cat.position.y > game.height +16 || this.cat.position.y < -16 ){
 			// game.time.events.add(1000, this.lose, this);
+			game.global.lastAngle = this.cat.angle;
+			game.global.lastPosX = this.cat.position.x;
+			game.global.lastPosY = this.cat.position.y;
+			game.global.lastVelX = this.cat.body.velocity.x;
+			game.global.lastVelY = this.cat.body.velocity.y;
 			this.switchTo();
 		}
 

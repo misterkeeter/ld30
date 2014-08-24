@@ -3,7 +3,12 @@
 var game = new Phaser.Game(1024, 768, Phaser.AUTO, 'gameDiv');
 
 game.global = { 
-	score: 0
+	lastPosX:0,
+	lastPosY:0,
+	lastAngle:0,
+	lastVelX:0,
+	lastVelY:0,
+	moveSpeed:300
 };
 
 game.state.add('boot', bootState);
@@ -16,3 +21,5 @@ game.state.add('win', winState);
 game.state.add('lose', loseState);
 
 game.state.start('boot');
+
+game.antialias = false;

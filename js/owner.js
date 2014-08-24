@@ -2,6 +2,8 @@
 var ownerState = {
 
 	create: function(){
+
+		game.stage.smoothed = false;
 		this.cursor = game.input.keyboard.createCursorKeys();
 
 		var spaceEnd = game.add.text(game.world.centerX, game.world.height-80,
@@ -12,35 +14,59 @@ var ownerState = {
 		var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		spaceKey.onDown.addOnce(this.end, this);
 
-
-
-
-
-		this.owner = game.add.sprite(game.world.width - (game.world.width/4), game.world.centerY,'proto');
-		this.owner.anchor.setTo(0.5,0.5);
-		this.owner.frame =1;
-		this.owner.scale.setTo(2,2);
-
-		this.owner.checkWorldBounds = true;
-		this.owner.outOfBoundsKill = true;
-		game.physics.arcade.enable(this.owner);
-
-		this.createWorld();
-		createSpecial(this);
-
-		this.moveSpeed = 75;
-		this.restSpeed = 0;
-		this.moveAmount = this.moveSpeed;
-
-		this.moveCount = 10;
-
-		this.moveLabel = game.add.text(30,30,'moves: ' + this.moveCount,
-			{font: '18px Arial', fill: '#ffffff'});
-
 		this.isDown = false;
 		this.isRight = false;
 		this.isUp = false;
 		this.isLeft = false;
+		console.log(game.global.lastAngle);
+		if (Math.abs(game.global.lastAngle) == 90 && game.global.lastPosY > game.world.height){
+			console.log(game.global.lastAngle);
+			this.owner = game.add.sprite(game.global.lastPosX, 0, 'proto');
+			this.owner.angle = game.global.lastAngle;
+			this.isDown = true;
+		}
+		if (game.global.lastAngle == -180 && game.global.lastPosX > game.world.width){
+			console.log(game.global.lastAngle);
+			this.owner = game.add.sprite(0, game.global.lastPosY, 'proto');
+			this.owner.angle = game.global.lastAngle;
+			this.isRight = true;
+		}
+		if (game.global.lastAngle == 0 && game.global.lastPosX < 0){
+			console.log(game.global.lastAngle);
+			this.owner = game.add.sprite(game.world.width, game.global.lastPosY, 'proto');
+			this.owner.angle = game.global.lastAngle;
+			this.isLeft = true;
+		}
+		if ( Math.abs(game.global.lastAngle) == 90 && game.global.lastPosY < 0){
+			console.log(game.global.lastAngle);
+			this.owner = game.add.sprite(game.global.lastPosX, game.world.height, 'proto');
+			this.owner.angle = game.global.lastAngle;
+			this.isUp = true;
+		}
+
+
+		this.owner.anchor.setTo(0.5,0.5);
+		this.owner.animations.add('move', [0,1],8,true);
+		this.owner.animations.add('stop', [1],5,true);
+		this.owner.animations.play('move');
+		this.owner.scale.setTo(2,2);
+
+
+		game.physics.arcade.enable(this.owner);
+		this.owner.body.velocity.x = game.global.lastVelX;
+		this.owner.body.velocity.y = game.global.lastVelY;
+
+		this.createWorld();
+		createSpecial(this);
+
+
+		this.moveAmount = game.global.moveSpeed;
+
+		this.moveCount = 5;
+
+		this.moveLabel = game.add.text(30,30,'moves: ' + this.moveCount,
+			{font: '18px Arial', fill: '#ffffff'});
+
 
 	},
 
@@ -49,8 +75,6 @@ var ownerState = {
 		game.physics.arcade.overlap(this.owner,this.special, this.win, null, this);
 
 		this.move();
-		// this.map.tilePosition.x = -game.camera.x;
-  //   	this.map.tilePosition.y = -game.camera.y;
 		this.killCheck();
 		moveCheck(this, this.owner);
 	},
@@ -65,6 +89,10 @@ var ownerState = {
 	},
 
 	move: function(){
+
+		if (this.owner.body.velocity.x ==0 && this.owner.body.velocity.y == 0){
+			this.owner.animations.play('stop');
+		}
 		
 
 		if(this.cursor.left.justPressed(10)){
@@ -74,6 +102,8 @@ var ownerState = {
 				moveUpdate(this);
 				this.owner.body.velocity.x = -this.moveAmount;
 				this.owner.body.velocity.y = 0;
+				this.owner.animations.play('move');
+				this.owner.angle = 0;
 				setMove(this, 'isLeft');
 			}
 		}
@@ -84,6 +114,8 @@ var ownerState = {
 				moveUpdate(this);
 				this.owner.body.velocity.x = this.moveAmount;
 				this.owner.body.velocity.y = 0;
+				this.owner.animations.play('move');
+				this.owner.angle = 180;
 				setMove(this, 'isRight');
 			}
 		}
@@ -94,6 +126,8 @@ var ownerState = {
 				moveUpdate(this);
 				this.owner.body.velocity.y = -this.moveAmount;
 				this.owner.body.velocity.x = 0;
+				this.owner.animations.play('move');
+				this.owner.angle = 90;
 				setMove(this, 'isUp');
 			}
 		}
@@ -104,6 +138,8 @@ var ownerState = {
 				moveUpdate(this);
 				this.owner.body.velocity.y = this.moveAmount;
 				this.owner.body.velocity.x = 0;
+				this.owner.animations.play('move');
+				this.owner.angle = -90;
 				setMove(this, 'isDown');
 			}
 		}
@@ -111,14 +147,20 @@ var ownerState = {
 
 	killCheck: function(){
 
-		if (!this.owner.alive){
-			// game.time.events.add(1000, this.win, this);
+		if (this.owner.position.x > game.width + 16 || this.owner.position.x < -16 ||
+			this.owner.position.y > game.height + 16 || this.owner.position.y < -16 ){
+			// game.time.events.add(1000, this.lose, this);
+			game.global.lastAngle = this.owner.angle;
+			game.global.lastPosX = this.owner.position.x;
+			game.global.lastPosY = this.owner.position.y;
+			game.global.lastVelX = this.owner.body.velocity.x;
+			game.global.lastVelY = this.owner.body.velocity.y;
 			this.switchTo();
 		}
 	},
 
 	switchTo:function(){
-		say("you lose");
+		say("you cat");
 		game.state.start('cat');
 	},
 

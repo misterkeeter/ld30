@@ -2,6 +2,7 @@
 var playState = {
 
 	create: function(){
+		game.stage.smoothed = false;
 		this.cursor = game.input.keyboard.createCursorKeys();
 
 		var spaceEnd = game.add.text(game.world.centerX, game.world.height-80,
@@ -14,26 +15,27 @@ var playState = {
 
 		this.cat = game.add.sprite(game.world.width/4, game.world.centerY, 'proto');
 		this.cat.anchor.setTo(0.5,0.5);
-		this.cat.frame=0;
+		this.cat.frame=1;
+		this.cat.animations.add('move', [0,1],8,true);
+		this.cat.animations.add('stop', [1]);
 
-		this.cat.checkWorldBounds = true;
-		this.cat.outOfBoundsKill = true;
+
+
 		game.physics.arcade.enable(this.cat);
 
 		this.owner = game.add.sprite(game.world.width - (game.world.width/4), game.world.centerY,'proto');
 		this.owner.anchor.setTo(0.5,0.5);
 		this.owner.frame =1;
+		this.owner.animations.add('move', [0,1],8,true);
+		this.owner.animations.add('stop', [1],1,true);
 		this.owner.scale.setTo(2,2);
 
-		this.owner.checkWorldBounds = true;
-		this.owner.outOfBoundsKill = true;
+
 		game.physics.arcade.enable(this.owner);
 
 		this.createWorld();
 
-		this.moveSpeed = 75;
-		this.restSpeed = 0;
-		this.moveAmount = this.moveSpeed;
+		this.moveAmount = game.global.moveSpeed;
 
 		this.cat.moveCount = 5;
 		this.owner.moveCount = 10;
@@ -57,11 +59,9 @@ var playState = {
 		game.physics.arcade.overlap(this.owner,this.cat, this.win, null, this);
 
 		this.move();
-		// this.map.tilePosition.x = -game.camera.x;
-  //   	this.map.tilePosition.y = -game.camera.y;
+
 		this.killCheck();
-		// moveCheck(this, this.cat);
-		// moveCheck(this, this.owner);
+
 		moveCheckTwo(this, this.cat, this.owner);
 	},
 
@@ -75,6 +75,13 @@ var playState = {
 	},
 
 	move: function(){
+		if (this.cat.body.velocity.x ==0 && this.cat.body.velocity.y == 0){
+			this.cat.animations.play('stop');
+		}
+
+		if (this.owner.body.velocity.x ==0 && this.owner.body.velocity.y == 0){
+			this.owner.animations.play('stop');
+		}
 		
 
 		if(this.cursor.left.justPressed(10)){
@@ -84,10 +91,14 @@ var playState = {
 				if (this.owner.moveCount > 0 ){
 					this.owner.body.velocity.x = -this.moveAmount;
 					this.owner.body.velocity.y = 0;
+					this.owner.animations.play('move');
+					this.owner.angle = 0;
 				}
 				if (this.cat.moveCount > 0 ){
-					this.cat.body.velocity.x = -this.moveAmount*2;
+					this.cat.body.velocity.x = -this.moveAmount;
 					this.cat.body.velocity.y = 0;
+					this.cat.animations.play('move');
+					this.cat.angle = 0;
 				}
 				setMove(this, 'isLeft');
 				moveUpdate(this.owner);
@@ -101,10 +112,14 @@ var playState = {
 				if (this.owner.moveCount > 0 ){
 					this.owner.body.velocity.x = this.moveAmount;
 					this.owner.body.velocity.y = 0;
+					this.owner.animations.play('move');
+					this.owner.angle = 180;
 				}
 				if (this.cat.moveCount > 0 ){
-					this.cat.body.velocity.x = this.moveAmount*2;
+					this.cat.body.velocity.x = this.moveAmount;
 					this.cat.body.velocity.y = 0;
+					this.cat.animations.play('move');
+					this.cat.angle = 180;
 				}
 				setMove(this, 'isRight');
 				moveUpdate(this.owner);
@@ -119,10 +134,14 @@ var playState = {
 				if (this.owner.moveCount > 0 ){
 					this.owner.body.velocity.y = -this.moveAmount;
 					this.owner.body.velocity.x = 0;
+					this.owner.animations.play('move');
+					this.owner.angle = 90;
 				}
 				if (this.cat.moveCount > 0 ){
-					this.cat.body.velocity.y = -this.moveAmount*2;
+					this.cat.body.velocity.y = -this.moveAmount;
 					this.cat.body.velocity.x = 0;
+					this.cat.animations.play('move');
+					this.cat.angle = 90;
 				}
 				setMove(this, 'isUp');
 				moveUpdate(this.owner);
@@ -136,10 +155,14 @@ var playState = {
 				if (this.owner.moveCount > 0 ){
 					this.owner.body.velocity.y = this.moveAmount;
 					this.owner.body.velocity.x = 0;
+					this.owner.animations.play('move');
+					this.owner.angle = 270;
 				}
 				if (this.cat.moveCount > 0 ){
-					this.cat.body.velocity.y = this.moveAmount*2;
+					this.cat.body.velocity.y = this.moveAmount;
 					this.cat.body.velocity.x = 0;
+					this.cat.animations.play('move');
+					this.cat.angle = 270;
 				}
 				setMove(this, 'isDown');
 				moveUpdate(this.owner);
@@ -149,12 +172,24 @@ var playState = {
 	},
 
 	killCheck: function(){
-		if (!this.cat.alive){
+		if (this.cat.position.x > game.width + 16|| this.cat.position.x < -16 ||
+			this.cat.position.y > game.height + 16 || this.cat.position.y < -16 ){
 			// game.time.events.add(1000, this.lose, this);
+			game.global.lastAngle = this.cat.angle;
+			game.global.lastPosX = this.cat.position.x;
+			game.global.lastPosY = this.cat.position.y;
+			game.global.lastVelX = this.cat.body.velocity.x;
+			game.global.lastVelY = this.cat.body.velocity.y;
 			this.toOwner();
 		}
-		if (!this.owner.alive){
-			// game.time.events.add(1000, this.win, this);
+		if (this.owner.position.x > game.width + 16 || this.owner.position.x < -16 ||
+			this.owner.position.y > game.height + 16 || this.owner.position.y < -16 ){
+			// game.time.events.add(1000, this.lose, this);
+			game.global.lastAngle = this.owner.angle;
+			game.global.lastPosX = this.owner.position.x;
+			game.global.lastPosY = this.owner.position.y;
+			game.global.lastVelX = this.owner.body.velocity.x;
+			game.global.lastVelY = this.owner.body.velocity.y;
 			this.toCat();
 		}
 	},
