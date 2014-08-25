@@ -44,7 +44,7 @@ function say(string){
 function moveUpdate(object){
 	// if (object.moveCount > 0){
 		object.moveCount -= 1;
-		object.moveLabel.text = 'moves left: ' + object.moveCount;
+		object.moveLabel.text = 'left: ' + object.moveCount;
 	// } 
 }
 

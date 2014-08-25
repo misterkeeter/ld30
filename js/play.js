@@ -15,6 +15,10 @@ var playState = {
 		this.scale = 2;
 		game.stage.smoothed = false;
 		this.cursor = game.input.keyboard.createCursorKeys();
+		this.aKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
+		this.dKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+		this.wKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+		this.sKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
 
 		
 
@@ -57,20 +61,21 @@ var playState = {
 		this.moveAmount = game.global.moveSpeed;
 
 		this.cat.moveCount = 25;
-		this.owner.moveCount = 25
-
-		this.cat.moveLabel = game.add.text(game.world.centerX, 30,'moves left: ' + this.cat.moveCount,
-			{font: '30px ' + game.global.font, fill: '#ffffff'});
+		this.owner.moveCount = 25;
+		this.cat.picLabel = game.add.sprite(16, 16, 'proto');
+		this.cat.picLabel.frame = 1;
+		this.cat.moveLabel = game.add.text(96, 32,'left: ' + this.cat.moveCount,
+			{font: '20px ' + game.global.font, fill: '#ffffff'});
 		this.cat.moveLabel.anchor.setTo(0.5,0.5);
 
-		this.owner.moveLabel = game.add.text(game.world.centerX, -100,'moves: ' + this.cat.moveCount,
-			{font: '18px ' + game.global.font, fill: '#ffffff'});
+		this.owner.picLabel = game.add.sprite(game.world.width -144, 16, 'proto');
+		this.owner.picLabel.frame = 11;
+		this.owner.moveLabel = game.add.text(game.world.width -64, 32,'left: ' + this.owner.moveCount,
+			{font: '20px ' + game.global.font, fill: '#ffffff'});
+		this.owner.moveLabel.anchor.setTo(0.5,0.5);
 
 
-		this.isDown = false;
-		this.isRight = false;
-		this.isUp = false;
-		this.isLeft = false;
+
 
 
 		this.cat3 = game.add.sound('cat3', 0.25);
@@ -153,89 +158,119 @@ var playState = {
 
 		
 
-		if(this.cursor.left.justPressed(10)){
+		if(this.aKey.justPressed(10)){
 			if (!this.isLeft) { 
-				this.isLeft = true;
+				this.cat.isLeft = true;
 				say('left');
-				if (this.owner.moveCount > 0 ){
-					this.owner.body.velocity.x = this.moveAmount;
-					this.owner.body.velocity.y = 0;
-					this.owner.animations.play('move');
-					this.owner.angle = 180;
-				}
 				if (this.cat.moveCount > 0 ){
 					this.cat.body.velocity.x = -this.moveAmount;
 					this.cat.body.velocity.y = 0;
 					this.cat.animations.play('move');
 					this.cat.angle = 0;
 				}
-				setMove(this, 'isLeft');
-				moveUpdate(this.owner);
+				setMove(this.cat, 'isLeft');
 				moveUpdate(this.cat);
 			}
 		}
-		if(this.cursor.right.justPressed(10)){
-			if (!this.isRight){
-				this.isRight = true;
-				say('right');
+		if(this.cursor.left.justPressed(10)){
+			if (!this.isLeft) { 
+				this.owner.isLeft = true;
+				say('left');
 				if (this.owner.moveCount > 0 ){
 					this.owner.body.velocity.x = -this.moveAmount;
 					this.owner.body.velocity.y = 0;
 					this.owner.animations.play('move');
 					this.owner.angle = 0;
 				}
+				setMove(this.owner, 'isLeft');
+				moveUpdate(this.owner);
+			}
+		}
+		if(this.dKey.justPressed(10)){
+			if (!this.cat.isRight){
+				this.cat.isRight = true;
+				say('right');
 				if (this.cat.moveCount > 0 ){
 					this.cat.body.velocity.x = this.moveAmount;
 					this.cat.body.velocity.y = 0;
 					this.cat.animations.play('move');
 					this.cat.angle = 180;
 				}
-				setMove(this, 'isRight');
-				moveUpdate(this.owner);
+				setMove(this.cat, 'isRight');
 				moveUpdate(this.cat);
 			}
 		}
-		if(this.cursor.up.justPressed(10)){
-			if (!this.isUp){
-				this.isUp = true;
-				say('up');
-				
+		if(this.cursor.right.justPressed(10)){
+			if (!this.owner.isRight){
+				this.owner.isRight = true;
+				say('right');
 				if (this.owner.moveCount > 0 ){
-					this.owner.body.velocity.y = this.moveAmount;
-					this.owner.body.velocity.x = 0;
+					this.owner.body.velocity.x = this.moveAmount;
+					this.owner.body.velocity.y = 0;
 					this.owner.animations.play('move');
-					this.owner.angle = 270;
+					this.owner.angle = 180;
 				}
+				setMove(this.owner, 'isRight');
+				moveUpdate(this.owner);
+			}
+		}
+
+		if(this.wKey.justPressed(10)){
+			if (!this.cat.isUp){
+				this.cat.isUp = true;
+				say('up');
 				if (this.cat.moveCount > 0 ){
 					this.cat.body.velocity.y = -this.moveAmount;
 					this.cat.body.velocity.x = 0;
 					this.cat.animations.play('move');
 					this.cat.angle = 90;
 				}
-				setMove(this, 'isUp');
-				moveUpdate(this.owner);
+				setMove(this.cat, 'isUp');
 				moveUpdate(this.cat);
 			}
 		}
-		if(this.cursor.down.justPressed(10)){
-			if (!this.isDown){
-				this.isDown = true;
-				say('down');
+		if(this.cursor.up.justPressed(10)){
+			if (!this.owner.isUp){
+				this.owner.isUp = true;
+				say('up');
 				if (this.owner.moveCount > 0 ){
 					this.owner.body.velocity.y = -this.moveAmount;
 					this.owner.body.velocity.x = 0;
 					this.owner.animations.play('move');
 					this.owner.angle = 90;
 				}
+				setMove(this.owner, 'isUp');
+				moveUpdate(this.owner);
+			}
+		}
+
+		if(this.sKey.justPressed(10)){
+			if (!this.cat.isDown){
+				this.cat.isDown = true;
+				say('down');
 				if (this.cat.moveCount > 0 ){
 					this.cat.body.velocity.y = this.moveAmount;
 					this.cat.body.velocity.x = 0;
 					this.cat.animations.play('move');
 					this.cat.angle = 270;
 				}
-				setMove(this, 'isDown');
-				moveUpdate(this.owner);
+				setMove(this.cat, 'isDown');
 				moveUpdate(this.cat);
+			}
+		}
+
+		if(this.cursor.down.justPressed(10)){
+			if (!this.owner.isDown){
+				this.owner.isDown = true;
+				say('down');
+				if (this.owner.moveCount > 0 ){
+					this.owner.body.velocity.y = this.moveAmount;
+					this.owner.body.velocity.x = 0;
+					this.owner.animations.play('move');
+					this.owner.angle = 270;
+				}
+				setMove(this.owner, 'isDown');
+				moveUpdate(this.owner);
 			}
 		}
 	},
