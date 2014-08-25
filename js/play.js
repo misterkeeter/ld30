@@ -88,8 +88,8 @@ var playState = {
 	},
 
 	update: function(){
-		game.physics.arcade.overlap(this.cat, this.boxes, this.tileSwap, null, this);
-		game.physics.arcade.overlap(this.owner, this.boxes, this.tileSwap, null, this);
+		game.physics.arcade.overlap(this.cat, this.boxes, this.tileSwapScore, null, this);
+		game.physics.arcade.overlap(this.owner, this.boxes, this.tileSwapScore, null, this);
 		game.physics.arcade.overlap(this.cat, this.owner, this.preLose, null, this);
 		game.physics.arcade.overlap(this.cat, this.layer);
 		game.physics.arcade.overlap(this.owner, this.layer);
@@ -99,7 +99,7 @@ var playState = {
 		this.move();
 		teleport(this.cat);
 		teleport(this.owner);
-		moveCheck(this, this.cat);
+		moveCheckTwo(this, this.cat, this.owner);
 		this.checkOn();
 
 	},
@@ -110,7 +110,7 @@ var playState = {
 		this.spaceCount = 0;
 		for ( i=0 ; i<7; i++){
 			for(j=0; j<5; j++){
-				temp = game.add.sprite(this.scale*(64*i+32), this.scale*(64*j+32), 'proto', 15, this.boxes);
+				temp = game.add.sprite(this.scale*(64*i+32), this.scale*(64*j+32), 'proto', 3, this.boxes);
 				temp.scale.setTo(2*this.scale);
 				// temp.anchor = (0.5,0.5);
 				temp.body.setSize(16,16, 32,32);
@@ -161,7 +161,7 @@ var playState = {
 		if(this.aKey.justPressed(10)){
 			if (!this.isLeft) { 
 				this.cat.isLeft = true;
-				say('left');
+				console.log('left');
 				if (this.cat.moveCount > 0 ){
 					this.cat.body.velocity.x = -this.moveAmount;
 					this.cat.body.velocity.y = 0;
@@ -175,7 +175,7 @@ var playState = {
 		if(this.cursor.left.justPressed(10)){
 			if (!this.isLeft) { 
 				this.owner.isLeft = true;
-				say('left');
+				console.log('left');
 				if (this.owner.moveCount > 0 ){
 					this.owner.body.velocity.x = -this.moveAmount;
 					this.owner.body.velocity.y = 0;
@@ -189,7 +189,7 @@ var playState = {
 		if(this.dKey.justPressed(10)){
 			if (!this.cat.isRight){
 				this.cat.isRight = true;
-				say('right');
+				console.log('right');
 				if (this.cat.moveCount > 0 ){
 					this.cat.body.velocity.x = this.moveAmount;
 					this.cat.body.velocity.y = 0;
@@ -203,7 +203,7 @@ var playState = {
 		if(this.cursor.right.justPressed(10)){
 			if (!this.owner.isRight){
 				this.owner.isRight = true;
-				say('right');
+				console.log('right');
 				if (this.owner.moveCount > 0 ){
 					this.owner.body.velocity.x = this.moveAmount;
 					this.owner.body.velocity.y = 0;
@@ -218,7 +218,7 @@ var playState = {
 		if(this.wKey.justPressed(10)){
 			if (!this.cat.isUp){
 				this.cat.isUp = true;
-				say('up');
+				console.log('up');
 				if (this.cat.moveCount > 0 ){
 					this.cat.body.velocity.y = -this.moveAmount;
 					this.cat.body.velocity.x = 0;
@@ -232,7 +232,7 @@ var playState = {
 		if(this.cursor.up.justPressed(10)){
 			if (!this.owner.isUp){
 				this.owner.isUp = true;
-				say('up');
+				console.log('up');
 				if (this.owner.moveCount > 0 ){
 					this.owner.body.velocity.y = -this.moveAmount;
 					this.owner.body.velocity.x = 0;
@@ -247,7 +247,7 @@ var playState = {
 		if(this.sKey.justPressed(10)){
 			if (!this.cat.isDown){
 				this.cat.isDown = true;
-				say('down');
+				console.log('down');
 				if (this.cat.moveCount > 0 ){
 					this.cat.body.velocity.y = this.moveAmount;
 					this.cat.body.velocity.x = 0;
@@ -262,7 +262,7 @@ var playState = {
 		if(this.cursor.down.justPressed(10)){
 			if (!this.owner.isDown){
 				this.owner.isDown = true;
-				say('down');
+				console.log('down');
 				if (this.owner.moveCount > 0 ){
 					this.owner.body.velocity.y = this.moveAmount;
 					this.owner.body.velocity.x = 0;
@@ -299,7 +299,7 @@ var playState = {
 	},
 
 	tileSwap: function(object1, object2){
-		if(object1.over !== object2.name){
+		if(object1.over !== object2.name){ 
 			if(object1.name == 'cat'){
 			if(object2.frame == 3) {object2.frame = 6;}
 			else if(object2.frame !== 3){ 
@@ -323,26 +323,41 @@ var playState = {
 				} 
 			}
 			object1.over = object2.name; 
-			// console.log(object1.over);
 		}
-
-		
-		
-		
+	},
+	tileSwapNew:function(player, tile){
+		if(player.over !== tile.name){ //prevent flicker
+			if(player.name =='cat' &&  tile.frame == 3){tile.frame = 6;}
+			else if(player.name =='owner' &&  tile.frame == 3){tile.frame = 7;}
+			else{tile.frame = 3;}
+			player.over = tile.name;
+		} 
+	},
+	tileSwapScore:function(player, tile){
+		if(player.over !== tile.name){ //prevent flicker
+			if(player.name =='cat' &&  (tile.frame == 3 || tile.frame == 7)){tile.frame = 25;}
+			else if(player.name =='cat' &&  tile.frame == 25){tile.frame = 26;this.cat3.play();}
+			else if(player.name =='cat' &&  tile.frame == 7){tile.frame = 26;}
+			else if(player.name =='owner' &&  (tile.frame == 3 || tile.frame == 26)){tile.frame = 6;}
+			else if(player.name =='owner' &&  tile.frame == 6){tile.frame = 7;this.owner3.play();}
+			else if(player.name =='owner' &&  tile.frame == 26){tile.frame = 6;}
+			// else{tile.frame = 3;}
+			player.over = tile.name;
+		} 
 	},
 
 	// toCat:function(){
-	// 	say("you are cat");
+	// 	console.log("you are cat");
 	// 	game.state.start('cat');
 	// },
 
 	// toOwner:function(){
-	// 	say("you are owner");
+	// 	console.log("you are owner");
 	// 	game.state.start('owner');
 	// },
 
 	win: function(){
-		say("you win");
+		console.log("you win");
 		this.loop.destroy();
 		game.state.start('win');	
 	},
@@ -353,6 +368,14 @@ var playState = {
 			this.dead = true;
 			this.cat.body.velocity = zeroPoint;
 			this.owner.body.velocity = zeroPoint;
+			this.cursor.up.enabled = false;
+			this.cursor.down.enabled = false;
+			this.cursor.left.enabled = false;
+			this.cursor.right.enabled = false;
+			this.wKey.enabled = false;
+			this.aKey.enabled = false;
+			this.sKey.enabled = false;
+			this.dKey.enabled = false;
 			this.loop.stop();
 			this.death.play();
 		}
@@ -362,7 +385,7 @@ var playState = {
 	},
 
 	lose: function(){
-		say("you lose");
+		console.log("you lose");
 		this.loop.destroy();
 		this.dead = false;
 		game.state.start('lose');

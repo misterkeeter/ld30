@@ -37,52 +37,48 @@ function bigLoad(list, type){
 	}
 }
 
-function say(string){
-	console.log(string);
-}
+
 
 function moveUpdate(object){
-	// if (object.moveCount > 0){
+	if (object.moveCount > 0){
 		object.moveCount -= 1;
 		object.moveLabel.text = 'left: ' + object.moveCount;
-	// } 
+	} 
 }
 
-function moveCheck(object, player){
-	// if (object.moveCount == 0 && player.body.velocity.x ==0 && player.body.velocity.y == 0){
-	// 		say(player + " " + player.body.velocity);
-	// 		object.lose();
-	// }
-	// if (object.moveCount == 0 && player.body.velocity !== (0,0)){
-	// 	object.cursor.up.enabled = false;
-	// 	object.cursor.down.enabled = false;
-	// 	object.cursor.left.enabled = false;
-	// 	object.cursor.right.enabled = false;
-	// }
-	if(player.moveCount == 0){
-		object.lose();
-	}
 
-
-}
 
 function moveCheckTwo(object, cat, owner){
-	// zeroPoint = new Phaser.Point(0,0);
+	zeroPoint = new Phaser.Point(0,0);
 	// console.log(cat.moveCount == 0);
 	// console.log(cat.body.velocity == zeroPoint);
 	// console.log(owner.moveCount == 0);
 	// console.log(owner.body.velocity == zeroPoint);
 
-	// if ((cat.moveCount == 0) && (Phaser.Point.equals(cat.body.velocity,zeroPoint)) && (owner.moveCount == 0) && (Phaser.Point.equals(owner.body.velocity, zeroPoint)) ) {
-	// 		say("loser");
-	// 		object.lose();
-	// }
-	// if (object.moveCount == 0 && player.body.velocity !== (0,0)){
-	// 	object.cursor.up.enabled = false;
-	// 	object.cursor.down.enabled = false;
-	// 	object.cursor.left.enabled = false;
-	// 	object.cursor.right.enabled = false;
-	// }
+	if ((cat.moveCount == 0) && (Phaser.Point.equals(cat.body.velocity,zeroPoint)) && (owner.moveCount == 0) && (Phaser.Point.equals(owner.body.velocity, zeroPoint)) ) {
+			console.log("loser");
+			object.lose();
+	}
+	if (cat.moveCount == 0 ){
+		if(!cat.stopped){
+			console.log("no cat movement");
+			object.wKey.enabled = false;
+			object.aKey.enabled = false;
+			object.sKey.enabled = false;
+			object.dKey.enabled = false;
+			cat.stopped = true;
+		}
+	}
+	if (owner.moveCount == 0 ){
+		if(!owner.stopped){
+			console.log("no duck movement");
+			object.cursor.up.enabled = false;
+			object.cursor.down.enabled = false;
+			object.cursor.left.enabled = false;
+			object.cursor.right.enabled = false;
+			owner.stopped = true;
+		}
+	}
 
 }
 
