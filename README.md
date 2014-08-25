@@ -1,4 +1,6 @@
 ##Kit Quack Attack
+![splash screen](https://raw.githubusercontent.com/misterkeeter/ld30/master/assets/KitQuack1.png)
+![gameplay screen](https://raw.githubusercontent.com/misterkeeter/ld30/master/assets/KitQuack2.png)
 
 Kit Quack Attak was done in 48 hours for Ludem Dare 30.  
 It's my second coded game and my 3rd Ludem Dare.  
