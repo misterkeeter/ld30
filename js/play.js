@@ -14,6 +14,7 @@ var playState = {
 	create: function(){
 		game.global.catScore = 0;
 		game.global.ownerScore = 0;
+		game.global.deadTele = 0;
 		this.scale = 2;
 		game.stage.smoothed = false;
 		this.cursor = game.input.keyboard.createCursorKeys();
@@ -112,7 +113,7 @@ var playState = {
 		teleport(this.cat);
 		teleport(this.owner);
 		moveCheckTwo(this, this.cat, this.owner);
-		this.checkOn();
+		// this.checkOn();
 
 	},
 
@@ -139,17 +140,17 @@ var playState = {
 
 	},
 
-	checkOn: function(){
-		game.global.boxCount = 0;
-		this.boxes.forEach(function(item){
-			if (item.frame == 3) {
-				game.global.boxCount++;
-			}
+	// checkOn: function(){
+	// 	game.global.boxCount = 0;
+	// 	this.boxes.forEach(function(item){
+	// 		if (item.frame == 3) {
+	// 			game.global.boxCount++;
+	// 		}
 
-		});
-		if (game.global.boxCount == this.spaceCount) {this.win();}
+	// 	});
+	// 	if (game.global.boxCount == this.spaceCount) {this.win();}
 
-	},
+	// },
 
 	flipVelo: function(object1,object2){
 		console.log(object1.body.velocity);
@@ -444,9 +445,11 @@ var playState = {
 
 	lose: function(){
 		console.log("you lose");
-		this.loop.destroy();
-		this.dead = false;
-		game.state.start('lose');
+		if(this.loop){
+			this.loop.destroy();
+			this.dead = false;
+			game.state.start('lose');
+		}
 	},
 
 	end:function(){

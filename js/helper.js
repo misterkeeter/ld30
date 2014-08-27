@@ -56,8 +56,11 @@ function moveCheckTwo(object, cat, owner){
 	// console.log(owner.body.velocity == zeroPoint);
 
 	if ((cat.moveCount == 0) && (Phaser.Point.equals(cat.body.velocity,zeroPoint)) && (owner.moveCount == 0) && (Phaser.Point.equals(owner.body.velocity, zeroPoint)) ) {
-			console.log("loser");
-			object.lose();
+		console.log("loser");
+		object.lose();
+	} else if (cat.moveCount == 0 && owner.moveCount == 0 && game.global.deadTele >=3){
+		console.log("dead walking: "+ game.global.deadTele);
+		object.lose();
 	}
 	if (cat.moveCount == 0 ){
 		if(!cat.stopped){
@@ -126,10 +129,17 @@ function createSpecial(object){
 }
 
 function teleport(player){
-	if (player.y > game.world.height + 5){ player.y = 0; }
-	else if (player.y < - 5){player.y = game.world.height;}
-	else if (player.x > game.world.width + 5){player.x = 0;}
-	else if (player.x < -5){player.x = game.world.width;}
+	if (player.y > game.world.height + 5){ player.y = 0; deadTele(player);}
+	else if (player.y < - 5){player.y = game.world.height; deadTele(player);}
+	else if (player.x > game.world.width + 5){player.x = 0; deadTele(player);}
+	else if (player.x < -5){player.x = game.world.width; deadTele(player);}
+
+}
+function deadTele(player){
+	if (player.moveCount == 0 && game.global.deadTele < 4){
+		game.global.deadTele += 1;	
+		console.log(player.name + " dead tele " + game.global.deadTele);
+	}
 }
 
 

@@ -4,9 +4,14 @@ var menuState = {
 	
 	create: function  () {
 
-		var nameLabel = game.add.text(game.world.centerX, game.world.centerY, 'Kit Quack\nAttack',
+		var nameLabel = game.add.text(game.world.centerX, game.world.centerY -128, 'Kit Quack\nAttack',
 			{ font: '150px ' + game.global.font, fill: '#ffffff', align: 'center' });
 		nameLabel.anchor.setTo(0.5,0.5);
+
+		var instructLabel = game.add.text(game.world.centerX, game.world.height-256,
+			'occupy the most spaces\nbefore you run out of moves!',
+			{font:'35px ' + game.global.font, fill: '#ffffff', align:'center'});
+		instructLabel.anchor.setTo(0.5,0.5);
 
 
 		var startLabel = game.add.text(game.world.centerX, game.world.height-80,
@@ -31,7 +36,7 @@ var winState = {
 	create: function(){
 		// this.game.resizeWorld();
 		if(game.global.catScore == game.global.ownerScore){
-			winText = "Hooray!\nQuackers and Milk\nfor Everyone!";
+			winText = "Hooray!\nQuackers and Milk\nfor Everyone!\n" + game.global.catScore + " : " + game.global.ownerScore;
 		} else if(game.global.catScore > game.global.ownerScore){
 			winText = "Cat Wins\n" + game.global.catScore + " : " + game.global.ownerScore;
 		} else if(game.global.catScore < game.global.ownerScore){
@@ -64,7 +69,7 @@ var loseState = {
 		// game.world.width = game.screen.width;
 		// game.world.height = game.screen.height;
 		if(game.global.catScore == game.global.ownerScore){
-			winText = "Hooray!\nQuackers and Milk\nfor Everyone!";
+			winText = "Hooray!\nQuackers and Milk\nfor Everyone!\n" + game.global.catScore + " : " + game.global.ownerScore;
 		} else if(game.global.catScore > game.global.ownerScore){
 			winText = "Cat Wins\n" + game.global.catScore + " : " + game.global.ownerScore;
 		} else if(game.global.catScore < game.global.ownerScore){
@@ -82,7 +87,7 @@ var loseState = {
 			var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 			spaceKey.onDown.addOnce(this.start, this);
 
-		this.loop = game.add.sound('lose',0.75);
+		this.loop = game.add.sound('win',0.75);
 		this.loop.play();
 	},
 
