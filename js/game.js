@@ -11,7 +11,8 @@ game.global = {
 	moveSpeed:300,
 	ownerScore: 0,
 	catScore: 0,
-	deadTele: 0,
+	deadTeleCat: 0,
+	deadTeleOwner: 0,
 	font:'Graduate'
 };
 

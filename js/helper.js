@@ -58,8 +58,9 @@ function moveCheckTwo(object, cat, owner){
 	if ((cat.moveCount == 0) && (Phaser.Point.equals(cat.body.velocity,zeroPoint)) && (owner.moveCount == 0) && (Phaser.Point.equals(owner.body.velocity, zeroPoint)) ) {
 		console.log("loser");
 		object.lose();
-	} else if (cat.moveCount == 0 && owner.moveCount == 0 && game.global.deadTele >=3){
-		console.log("dead walking: "+ game.global.deadTele);
+	} else if (cat.moveCount == 0 && owner.moveCount == 0 && game.global.deadTeleCat >=3 || game.global.deadTeleOwner >=3){
+		console.log("dead duck walking: "+ game.global.deadTeleOwner);
+		console.log("dead cat walking: "+ game.global.deadTeleCat);
 		object.lose();
 	}
 	if (cat.moveCount == 0 ){
@@ -136,9 +137,13 @@ function teleport(player){
 
 }
 function deadTele(player){
-	if (player.moveCount == 0 && game.global.deadTele < 4){
-		game.global.deadTele += 1;	
-		console.log(player.name + " dead tele " + game.global.deadTele);
+	if (player.name =='cat' &&player.moveCount == 0 && game.global.deadTeleCat < 4){
+		game.global.deadTeleCat += 1;	
+		console.log(player.name + " dead tele " + game.global.deadTeleCat);
+	}
+	if (player.name =='owner' &&player.moveCount == 0 && game.global.deadTeleOwner < 4){
+		game.global.deadTeleOwner += 1;	
+		console.log(player.name + " dead tele " + game.global.deadTeleOwner);
 	}
 }
 

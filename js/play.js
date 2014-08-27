@@ -14,7 +14,8 @@ var playState = {
 	create: function(){
 		game.global.catScore = 0;
 		game.global.ownerScore = 0;
-		game.global.deadTele = 0;
+		game.global.deadTeleCat = 0;
+		game.global.deadTeleOwner = 0;
 		this.scale = 2;
 		game.stage.smoothed = false;
 		this.cursor = game.input.keyboard.createCursorKeys();
@@ -172,7 +173,7 @@ var playState = {
 		
 
 		if(this.aKey.justPressed(10)){
-			if (!this.isLeft) { 
+			if (!this.cat.isLeft) { 
 				this.cat.isLeft = true;
 				console.log('left');
 				if (this.cat.moveCount > 0 ){
@@ -186,7 +187,7 @@ var playState = {
 			}
 		}
 		if(this.cursor.left.justPressed(10)){
-			if (!this.isLeft) { 
+			if (!this.owner.isLeft) { 
 				this.owner.isLeft = true;
 				console.log('left');
 				if (this.owner.moveCount > 0 ){
@@ -359,6 +360,12 @@ var playState = {
 				// 	}
 				// }
 			}
+			else if (player.name =='cat' &&  tile.frame == 6 ){
+				tile.frame = 3;
+				game.global.ownerScore -=1;
+				this.owner.scoreLabel.text = game.global.ownerScore;
+
+			}
 			else if(player.name =='cat' &&  tile.frame == 25){
 				tile.frame = 26;
 				this.cat3.play();
@@ -384,6 +391,12 @@ var playState = {
 				// 		this.cat.scoreLabel.text = game.global.catScore;
 				// 	} 
 				// }
+			}
+			else if (player.name =='owner' &&  tile.frame == 25 ){
+				tile.frame = 3;
+				game.global.catScore -=1;
+				this.cat.scoreLabel.text = game.global.catScore;
+
 			}
 			else if(player.name =='owner' &&  tile.frame == 6){
 				tile.frame = 7;
