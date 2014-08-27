@@ -30,7 +30,13 @@ var menuState = {
 var winState = {
 	create: function(){
 		// this.game.resizeWorld();
-		winText = "Hooray!\nQuackers and Milk\nfor Everyone!";
+		if(game.global.catScore == game.global.ownerScore){
+			winText = "Hooray!\nQuackers and Milk\nfor Everyone!";
+		} else if(game.global.catScore > game.global.ownerScore){
+			winText = "Cat Wins\n" + game.global.catScore + " : " + game.global.ownerScore;
+		} else if(game.global.catScore < game.global.ownerScore){
+			winText = "Duck Wins\n" + game.global.ownerScore + " : " + game.global.catScore;
+		}
 		var nameLabel = game.add.text(game.world.centerX, game.world.centerY, winText,
 			{ font: '50px ' + game.global.font, fill: '#ffffff' ,align: 'center' });
 		nameLabel.anchor.setTo(0.5,0.5);
@@ -57,7 +63,14 @@ var loseState = {
 	create: function(){
 		// game.world.width = game.screen.width;
 		// game.world.height = game.screen.height;
-		var nameLabel = game.add.text(game.world.centerX, game.world.centerY, 'The Kitty-Duck Wars\nMust Continue',
+		if(game.global.catScore == game.global.ownerScore){
+			winText = "Hooray!\nQuackers and Milk\nfor Everyone!";
+		} else if(game.global.catScore > game.global.ownerScore){
+			winText = "Cat Wins\n" + game.global.catScore + " : " + game.global.ownerScore;
+		} else if(game.global.catScore < game.global.ownerScore){
+			winText = "Duck Wins\n" + game.global.ownerScore + " : " + game.global.catScore;
+		}
+		var nameLabel = game.add.text(game.world.centerX, game.world.centerY, winText,
 			{ font: '50px ' + game.global.font, fill: '#ffffff', align: 'center' });
 		nameLabel.anchor.setTo(0.5,0.5);
 

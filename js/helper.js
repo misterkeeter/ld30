@@ -108,6 +108,15 @@ function setMove(object, string){
 
 }
 
+function updateScore(player){
+	console.log(player.name);
+	if (player.name =='cat'){
+		player.scoreLabel = game.global.catScore;
+	} else {
+		player.scoreLabel = game.global.ownerScore;
+	}
+}
+
 function createSpecial(object){
 	object.special = game.add.sprite(game.world.width-game.world.width/4,game.world.height-game.world.height/4, 'proto');
 		object.special.frame = 5;

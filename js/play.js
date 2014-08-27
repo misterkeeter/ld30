@@ -12,6 +12,8 @@ var playState = {
 	},
 
 	create: function(){
+		game.global.catScore = 0;
+		game.global.ownerScore = 0;
 		this.scale = 2;
 		game.stage.smoothed = false;
 		this.cursor = game.input.keyboard.createCursorKeys();
@@ -31,6 +33,10 @@ var playState = {
 
 		var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		spaceKey.onDown.addOnce(this.end, this);
+
+		this.dot = game.add.text(game.world.centerX, 32, ':',
+			{font: '30px ' + game.global.font, fill: '#ffffff', align: 'center'});
+		this.dot.anchor.setTo(0.5,0.5);
 
 		this.cat = game.add.sprite(game.world.width/4, game.world.centerY , 'proto');
 		this.cat.anchor.setTo(0.5,0.5);
@@ -65,16 +71,22 @@ var playState = {
 		this.cat.picLabel = game.add.sprite(16, 16, 'proto');
 		this.cat.picLabel.frame = 1;
 		this.cat.moveLabel = game.add.text(96, 32,'left: ' + this.cat.moveCount,
-			{font: '20px ' + game.global.font, fill: '#ffffff'});
+			{font: '20px ' + game.global.font, fill: '#ffffff' , align: 'left'});
 		this.cat.moveLabel.anchor.setTo(0.5,0.5);
+		this.cat.scoreLabel = game.add.text(game.world.centerX -16, 32, game.global.catScore,
+			{font: '30px ' + game.global.font, fill: '#ffffff' , align: 'right'});
+		this.cat.scoreLabel.anchor.setTo(1,0.5);
 
 		this.owner.picLabel = game.add.sprite(game.world.width -144, 16, 'proto');
 		this.owner.picLabel.frame = 11;
 		this.owner.moveLabel = game.add.text(game.world.width -64, 32,'left: ' + this.owner.moveCount,
-			{font: '20px ' + game.global.font, fill: '#ffffff'});
+			{font: '20px ' + game.global.font, fill: '#ffffff', align: 'left' });
 		this.owner.moveLabel.anchor.setTo(0.5,0.5);
+		this.owner.scoreLabel = game.add.text(game.world.centerX +16, 32, game.global.ownerScore,
+			{font: '30px ' + game.global.font, fill: '#ffffff', align: 'left'});
+		this.owner.scoreLabel.anchor.setTo(0,0.5);
 
-
+ 
 
 
 
@@ -335,12 +347,58 @@ var playState = {
 	},
 	tileSwapScore:function(player, tile){
 		if(player.over !== tile.name){ //prevent flicker
-			if(player.name =='cat' &&  (tile.frame == 3 || tile.frame == 7)){tile.frame = 25;}
-			else if(player.name =='cat' &&  tile.frame == 25){tile.frame = 26;this.cat3.play();}
-			else if(player.name =='cat' &&  tile.frame == 7){tile.frame = 26;}
-			else if(player.name =='owner' &&  (tile.frame == 3 || tile.frame == 26)){tile.frame = 6;}
-			else if(player.name =='owner' &&  tile.frame == 6){tile.frame = 7;this.owner3.play();}
-			else if(player.name =='owner' &&  tile.frame == 26){tile.frame = 6;}
+			if(player.name =='cat' &&  tile.frame == 3 ){
+				tile.frame = 25;
+				game.global.catScore +=1;
+				player.scoreLabel.text = game.global.catScore;
+				// if(tile.frame == 25){ 
+				// 	if(game.global.ownerScore>0) { 
+				// 		game.global.ownerScore -= 3; 
+				// 		this.owner.scoreLabel.text = game.global.ownerScore;
+				// 	}
+				// }
+			}
+			else if(player.name =='cat' &&  tile.frame == 25){
+				tile.frame = 26;
+				this.cat3.play();
+				game.global.catScore +=2;
+				player.scoreLabel.text = game.global.catScore;
+			}
+			else if(player.name =='cat' &&  tile.frame == 7){
+				tile.frame = 25;
+				game.global.catScore +=1;
+				player.scoreLabel.text = game.global.catScore;
+				if(game.global.ownerScore>0) {
+					game.global.ownerScore -= 3; 
+					this.owner.scoreLabel.text = game.global.ownerScore;
+				}
+			}
+			else if(player.name =='owner' &&  (tile.frame == 3 )){
+				tile.frame = 6;
+				game.global.ownerScore +=1;
+				player.scoreLabel.text = game.global.ownerScore;
+				// if(tile.frame == 6){ 
+				// 	if(game.global.catScore>0) { 
+				// 		game.global.catScore -= 3; 
+				// 		this.cat.scoreLabel.text = game.global.catScore;
+				// 	} 
+				// }
+			}
+			else if(player.name =='owner' &&  tile.frame == 6){
+				tile.frame = 7;
+				this.owner3.play();
+				game.global.ownerScore +=2;
+				player.scoreLabel.text = game.global.ownerScore;
+			}
+			else if(player.name =='owner' &&  tile.frame == 26){
+				tile.frame = 6;
+				game.global.ownerScore +=1;
+				player.scoreLabel.text = game.global.ownerScore;
+				if(game.global.catScore>0) {
+					game.global.catScore -= 3; 
+					this.cat.scoreLabel.text = game.global.catScore;
+				}
+			}
 			// else{tile.frame = 3;}
 			player.over = tile.name;
 		} 

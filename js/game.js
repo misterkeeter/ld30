@@ -9,6 +9,8 @@ game.global = {
 	lastVelX:0,
 	lastVelY:0,
 	moveSpeed:300,
+	ownerScore: 0,
+	catScore: 0,
 	font:'Graduate'
 };
 
